@@ -2,3 +2,16 @@ P4PORT=ssl:perforce.uqac.ca:1666
 P4USER=rcafe
 P4CLIENT=rcafe_main_moteur
 P4IGNORE=.p4ignore.txt;.gitignore
+
+# Unreal
+Binaries/
+Intermediate/
+Saved/
+DerivedDataCache/
+Build/
+.vs/
+.vscode/
+.Rider/
+*.sln
+*.pdb
+*.log
