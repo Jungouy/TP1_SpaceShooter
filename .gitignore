@@ -1,0 +1,27 @@
+# Unreal Engine
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+Build/
+.vs/
+.vscode/
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.opensdf
+*.sdf
+*.db
+*.pdb
+*.log
+
+# Rider / IntelliJ
+.idea/
+*.iml
+.Rider/
+
+# OS
+.DS_Store
+Thumbs.db
