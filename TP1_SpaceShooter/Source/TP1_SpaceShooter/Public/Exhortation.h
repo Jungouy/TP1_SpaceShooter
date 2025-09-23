@@ -41,4 +41,7 @@ public:
 	float YMin = -1890.0f;
 	float ZMax = 1060.0f;
 	float ZMin = -1060.0f;
+
+	UPROPERTY(EditAnywhere,Category = "BP")
+	TSubclassOf<class ASuperProjectile> ProjectileBlueprint;
 };

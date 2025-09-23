@@ -3,9 +3,11 @@
 
 #include "Public/Exhortation.h"
 
+#include "SuperProjectile.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "GameFramework/PawnMovementComponent.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 
 
 // Sets default values
@@ -67,6 +69,28 @@ void AExhortation::MoveRightLeft(float Value)
 }
 void AExhortation::Fire()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, "coming soon");
+	if (!ProjectileBlueprint) return;
+
+	FVector SpawnLocation = GetActorLocation();
+	SpawnLocation.Z += 100.0f;
+	FRotator SpawnRotation = GetActorRotation(); // ou FRotator::ZeroRotator si tu veux
+
+	FActorSpawnParameters Params;
+	Params.Owner = this;
+	Params.Instigator = GetInstigator();
+
+	ASuperProjectile* Proj = GetWorld()->SpawnActor<ASuperProjectile>(ProjectileBlueprint, SpawnLocation, SpawnRotation, Params);
+	if (Proj && Proj->ProjectileMovement)
+	{
+		// Direction vers "avant" selon ta logique (ex: vers +Z local du pawn)
+		FVector Dir = FVector::UpVector; // world Up (0,0,1) si c'est vers le haut de ton écran
+		// Ou utiliser la rotation de ton pawn pour diriger le projectile :
+		// FVector Dir = GetActorRotation().RotateVector(FVector(0.f, 0.f, 1.f));
+
+		Dir.X = 0.f;
+		Dir = Dir.GetSafeNormal();
+
+		Proj->ProjectileMovement->Velocity = Dir * Proj->ProjectileMovement->InitialSpeed;
+	}
 }
 
