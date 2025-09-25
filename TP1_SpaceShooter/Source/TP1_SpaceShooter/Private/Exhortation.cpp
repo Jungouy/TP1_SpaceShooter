@@ -3,6 +3,7 @@
 
 #include "Public/Exhortation.h"
 
+#include "GrosKaillou.h"
 #include "SuperProjectile.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
@@ -73,7 +74,7 @@ void AExhortation::Fire()
 
 	FVector SpawnLocation = GetActorLocation();
 	SpawnLocation.Z += 100.0f;
-	FRotator SpawnRotation = GetActorRotation(); // ou FRotator::ZeroRotator si tu veux
+	FRotator SpawnRotation = GetActorRotation();
 
 	FActorSpawnParameters Params;
 	Params.Owner = this;
@@ -82,10 +83,7 @@ void AExhortation::Fire()
 	ASuperProjectile* Proj = GetWorld()->SpawnActor<ASuperProjectile>(ProjectileBlueprint, SpawnLocation, SpawnRotation, Params);
 	if (Proj && Proj->ProjectileMovement)
 	{
-		// Direction vers "avant" selon ta logique (ex: vers +Z local du pawn)
-		FVector Dir = FVector::UpVector; // world Up (0,0,1) si c'est vers le haut de ton écran
-		// Ou utiliser la rotation de ton pawn pour diriger le projectile :
-		// FVector Dir = GetActorRotation().RotateVector(FVector(0.f, 0.f, 1.f));
+		FVector Dir = FVector::UpVector;
 
 		Dir.X = 0.f;
 		Dir = Dir.GetSafeNormal();
@@ -93,4 +91,19 @@ void AExhortation::Fire()
 		Proj->ProjectileMovement->Velocity = Dir * Proj->ProjectileMovement->InitialSpeed;
 	}
 }
+void AExhortation::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
+
+	if (OtherActor && OtherActor != this)
+		if  (OtherActor && OtherActor->IsA(GrosKaillouBlueprint))
+		{
+			Health--;
+			if (Health <= 0) Destroy();
+		}
+	
+}
+
+
+
 

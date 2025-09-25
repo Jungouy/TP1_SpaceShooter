@@ -1,4 +1,6 @@
 ﻿#include "SuperProjectile.h"
+
+#include "GrosKaillou.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -10,23 +12,19 @@ ASuperProjectile::ASuperProjectile()
 
     BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollision"));
     RootComponent = BoxCollision;
-    BoxCollision->SetCollisionProfileName(TEXT("BlockAllDynamic")); // ou "Projectile" si tu as ce profile
-    BoxCollision->SetNotifyRigidBodyCollision(true); // pour recevoir OnComponentHit
+    BoxCollision->SetCollisionProfileName(TEXT("BlockAllDynamic"));
+    BoxCollision->SetNotifyRigidBodyCollision(true);
 
     StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
     StaticMesh->SetupAttachment(BoxCollision);
-    StaticMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision); // laisse la box gérer la collision
+    StaticMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
     ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
     ProjectileMovement->InitialSpeed = 1500.f;
     ProjectileMovement->MaxSpeed = 1500.f;
     ProjectileMovement->bRotationFollowsVelocity = false;
     ProjectileMovement->bShouldBounce = false;
-    ProjectileMovement->ProjectileGravityScale = 0.f; // pas de gravité pour un shooter 2D
-
-    // NOTE : on peut aussi définir une valeur par défaut InitialLifeSpan ici,
-    // mais on préfère exposer LifeTime et appeler SetLifeSpan dans BeginPlay.
-    // InitialLifeSpan = 3.0f;
+    ProjectileMovement->ProjectileGravityScale = 0.f;
 }
 
 void ASuperProjectile::BeginPlay()
@@ -38,16 +36,6 @@ void ASuperProjectile::BeginPlay()
     {
         SetLifeSpan(LifeTime);
     }
-
-    // Hook OnHit pour détruire à l'impact
-    if (BoxCollision)
-    {
-        BoxCollision->OnComponentHit.AddDynamic(this, &ASuperProjectile::OnHit);
-    }
-
-#if WITH_EDITOR
-    GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, TEXT("Projectile spawned"));
-#endif
 }
 
 void ASuperProjectile::Tick(float DeltaTime)
@@ -55,13 +43,13 @@ void ASuperProjectile::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
-void ASuperProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
-                             UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void ASuperProjectile::NotifyActorBeginOverlap(AActor* OtherActor)
 {
-    // ignore self-collisions / instigator si besoin
+    Super::NotifyActorBeginOverlap(OtherActor);
+
     if (OtherActor && OtherActor != this)
-    {
-        // Ici tu peux appliquer des dégâts, spawn des particules, etc.
-        Destroy();
-    }
+            if  (OtherActor && OtherActor->IsA(AGrosKaillou::StaticClass()))
+            {
+                Destroy();
+            }
 }
