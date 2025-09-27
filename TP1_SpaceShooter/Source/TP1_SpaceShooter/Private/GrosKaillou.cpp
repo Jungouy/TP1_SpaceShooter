@@ -76,6 +76,15 @@ void AGrosKaillou::Tick(float DeltaTime)
 			if (DistSq <= TargetReachedRadiusSq)
 			{
 				bHasReachedTarget = true;
+				if (ExplosionEffect)
+				{
+					UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+						GetWorld(),
+						ExplosionEffect,
+						GetActorLocation(),
+						FRotator::ZeroRotator
+					);
+				}
 				Destroy();
 			}
 		}
@@ -91,11 +100,32 @@ void AGrosKaillou::NotifyActorBeginOverlap(AActor* OtherActor)
 			Health--;
 			if (Health <= 0){
 				AUsineAKaillou::Score += 1;
+				bHasReachedTarget = true;
+				if (ExplosionEffect)
+				{
+					UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+						GetWorld(),
+						ExplosionEffect,
+						GetActorLocation(),
+						FRotator::ZeroRotator
+					);
+				}
 				Destroy();
+				
 			}
 			
 		}else{
 			if  (OtherActor && OtherActor->IsA(AExhortation::StaticClass())){
+				bHasReachedTarget = true;
+				if (ExplosionEffect)
+				{
+					UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+						GetWorld(),
+						ExplosionEffect,
+						GetActorLocation(),
+						FRotator::ZeroRotator
+					);
+				}
 				Destroy();
 			}
 		}

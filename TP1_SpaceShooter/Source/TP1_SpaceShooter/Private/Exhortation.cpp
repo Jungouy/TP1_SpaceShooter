@@ -79,7 +79,18 @@ void AExhortation::Fire()
 	FActorSpawnParameters Params;
 	Params.Owner = this;
 	Params.Instigator = GetInstigator();
+	if (ShootEffect)
+	{
+		FRotator EffectRotation = SpawnRotation;
+		EffectRotation.Pitch += 90.f;
 
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			GetWorld(),
+			ShootEffect,
+			SpawnLocation,
+			EffectRotation
+		);
+	}
 	ASuperProjectile* Proj = GetWorld()->SpawnActor<ASuperProjectile>(ProjectileBlueprint, SpawnLocation, SpawnRotation, Params);
 	if (Proj && Proj->ProjectileMovement)
 	{

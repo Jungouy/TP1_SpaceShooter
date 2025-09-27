@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "NiagaraFunctionLibrary.h"
 #include "GameFramework/Pawn.h"
 #include "Exhortation.generated.h"
 
@@ -47,6 +48,9 @@ public:
 	UPROPERTY(EditAnywhere,Category = "BP")
 	TSubclassOf<class AGrosKaillou> GrosKaillouBlueprint;
 
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
+	UNiagaraSystem* ShootEffect;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	int32 Health = 3;
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;

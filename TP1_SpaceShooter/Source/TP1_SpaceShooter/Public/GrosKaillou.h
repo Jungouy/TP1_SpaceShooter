@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "NiagaraFunctionLibrary.h"
 #include "GrosKaillou.generated.h"
+
 
 UCLASS()
 class TP1_SPACESHOOTER_API AGrosKaillou : public APawn
@@ -51,4 +53,6 @@ public:
 
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
+	UNiagaraSystem* ExplosionEffect;
 };
