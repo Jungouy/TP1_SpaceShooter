@@ -3,18 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "NiagaraFunctionLibrary.h"
 #include "GameFramework/Pawn.h"
-#include "Exhortation.generated.h"
+#include "NiagaraFunctionLibrary.h"
+#include "GrosKaillou.generated.h"
+
 
 UCLASS()
-class TP1_SPACESHOOTER_API AExhortation : public APawn
+class TP1_SPACESHOOTER_API AGrosKaillou : public APawn
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this pawn's properties
-	AExhortation();
+	AGrosKaillou();
 	UPROPERTY(VisibleAnywhere)
 	class UBoxComponent* BoxCollision;
 	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
@@ -22,11 +23,17 @@ public:
 
 	UPROPERTY(Category = Pawn, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UPawnMovementComponent* MovementComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	int32 InitialHealth = 2;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	int32 Health = 2;
 
-	void MoveUpDown(float Value);
-	void MoveRightLeft(float Value);
-	void Fire();
+	UPROPERTY(EditAnywhere, Category="AI")
+	float TargetReachedRadius = 100.f;
 
+	float TargetReachedRadiusSq = 100.f * 100.f;
+
+	bool bHasReachedTarget = false;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -38,22 +45,14 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	float YMax = 1890.0f;
-	float YMin = -1890.0f;
-	float ZMax = 1060.0f;
-	float ZMin = -1060.0f;
+	void SetHealth(int32);
 
-	UPROPERTY(EditAnywhere,Category = "BP")
-	TSubclassOf<class ASuperProjectile> ProjectileBlueprint;
-	UPROPERTY(EditAnywhere,Category = "BP")
-	TSubclassOf<class AGrosKaillou> GrosKaillouBlueprint;
+	FVector Seek(FVector Location);
+	
+	FVector TargetLocation;
 
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
-	UNiagaraSystem* ShootEffect;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-	int32 Health = 3;
-	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
-
-	
+	UNiagaraSystem* ExplosionEffect;
 };

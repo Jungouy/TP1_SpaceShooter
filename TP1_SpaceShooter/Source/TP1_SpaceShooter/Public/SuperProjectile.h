@@ -34,11 +34,10 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	// Optionnel : appelé quand on tape un obstacle
-	UFUNCTION()
-	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
-			   UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 public:
 	virtual void Tick(float DeltaTime) override;
+
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
 };
